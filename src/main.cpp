@@ -37,8 +37,8 @@ int main(int argc, char* argv[])
 
     // printf("%u\n", vertexBuffer);
 
-    // fluid::FluidSolver solver = fluid::FluidSolver(width, height, dx, viscosity);
-    fluid::FluidSolver *solver = new fluid::ThreadedFluidSolver(width, height, dx, viscosity, num_threads);
+    fluid::FluidSolver *solver = new fluid::FluidSolver(width, height, dx, viscosity);
+    // fluid::FluidSolver *solver = new fluid::ThreadedFluidSolver(width, height, dx, viscosity, num_threads);
     double dt_ms = 0;
     bool setExternalForce = false;
     double xposition, yposition;
@@ -57,8 +57,6 @@ int main(int argc, char* argv[])
         // update for previous
         solver->step(dt_ms);
         solver->render();
-
-       
 
         glfwSwapBuffers(window);
         glfwPollEvents();

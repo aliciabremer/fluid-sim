@@ -4,7 +4,7 @@ Stable fluid simulation based on the methods described by Stam (1999).
 
 Demo is included here:
 
-![](demos/project_gif.gif)
+<img src="demos/project_gif.gif" width="300">
 
 ## References
 

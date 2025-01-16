@@ -6,7 +6,7 @@ Demos are included here:
 
 <img src="demos/project_gif.gif" width="300">
 
-<img src="demos/new_project.gif">
+<img src="demos/new_project.gif"  width="300">
 ## References
 
 Amador, G. and Gomes, A. "Linear Solvers for Stable Fluids: GPU vs CPU." In: 17th Encontro Portugues de

@@ -4,7 +4,7 @@ CXX = g++
 LIBS = -L$(lib_dir)
 CXXFLAGS = -g $(INCLUDES)
 INCLUDES = -I $(inc_dir) 
-LDFLAGS = $(LIBS) -lglfw3 -lGL -lX11 -lpthread -lXrandr -lXi -ldl -lGLEW -lboost_system
+LDFLAGS = $(LIBS) -lglfw3 -lGL -lX11 -lpthread -lXrandr -lXi -ldl -lGLEW -lboost_system -lboost_thread
 
 BIN = bin
 SRC_DIR = src

@@ -10,11 +10,11 @@ using namespace std;
 int main(int argc, char* argv[])
 {
 
-    int width = 1000;
-    int height = 1000;
-    int dx = 10;
+    int width = 400;
+    int height = 400;
+    int dx = 4;
     float viscosity = 10.f;
-    size_t num_threads = 8;
+    size_t num_threads = 16;
 
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -35,10 +35,10 @@ int main(int argc, char* argv[])
     // GLuint vertexBuffer;
     // glGenBuffers(1, &vertexBuffer);
 
-    // printf("%u\n", vertexBuffer);
+    // printf("%u\n", vertexBuffer) ;
 
-    fluid::FluidSolver *solver = new fluid::FluidSolver(width, height, dx, viscosity);
-    // fluid::FluidSolver *solver = new fluid::ThreadedFluidSolver(width, height, dx, viscosity, num_threads);
+    // fluid::FluidSolver *solver = new fluid::FluidSolver(width, height, dx, viscosity);
+    fluid::FluidSolver *solver = new fluid::ThreadedFluidSolver(width, height, dx, viscosity, num_threads);
     double dt_ms = 0;
     bool setExternalForce = false;
     double xposition, yposition;

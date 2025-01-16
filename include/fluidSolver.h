@@ -25,7 +25,7 @@ class FluidSolver {
 
   public:
     static const int DIM = 2;
-    static const int ITER = 10;
+    static const int ITER = 20;
 
     FluidSolver(int width, int height, int dx, float viscosity);
     virtual ~FluidSolver();

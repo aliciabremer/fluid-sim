@@ -1,6 +1,7 @@
 #include <threadedFluidSolver.h>
 #include <cmath>
 #include <iostream>
+#include <boost/thread/latch.hpp>
 using namespace std;
 
 fluid::ThreadedFluidSolver::ThreadedFluidSolver(int width, int height, int dx, float viscosity, size_t num_threads):
@@ -15,25 +16,31 @@ void fluid::ThreadedFluidSolver::step(double dt_ms) {
     std::swap(velocity, prevVelocity);
 
     size_t div = numX / num_threads + 1;
+    boost::latch latch(num_threads);
     for (size_t n = 0; n < num_threads; n++) {
         boost::asio::post(pool,
-        [this, dt_ms, n, div]() mutable
+        [this, div, n, dt_ms, &latch]() mutable
         {
-            addAllForce(div*n, min(numX, div*(n+1)), dt_ms);
+            // cout << "Thread " << std::hash<std::thread::id>{}(std::this_thread::get_id()) % 0xff << " attaching\n";
+            addAllForce(div*n, min(this->numX, div*(n+1)), dt_ms);
+            latch.count_down();
         });
     }
 
-    pool.wait();
+    latch.wait();
+    // cout << "Waited" << endl;
 
+    boost::latch latch2(num_threads);
     for (size_t n = 0; n < num_threads; n++) {
         boost::asio::post(pool,
-        [this, dt_ms, n, div]() mutable
+        [this, div, n, dt_ms, &latch2]()  mutable
         {
             transportAllFluid(div*n, min(numX, div*(n+1)), dt_ms);
+            latch2.count_down();
         });
     }
 
-    pool.wait(); 
+    latch2.wait(); 
     
     diffuse(dt_ms);
     project();
@@ -47,16 +54,18 @@ void fluid::ThreadedFluidSolver::linearSolverJacobi(std::vector<std::array<float
 {
     for (int k = 0; k < ITER; k++) {
         size_t div = (numX-2) / num_threads + 1;
+        boost::latch latch(num_threads);
         for (size_t n = 0; n < num_threads; n++) {
             boost::asio::post(pool,
-            [this, n, &arr, div, &prevArr, &tmp, a, denom, scale, dims]() mutable
+            [this, div, n, &arr, &prevArr, &tmp, a, denom, scale, dims, &latch]() mutable
             {
-                iterationsLinearSolverJacobi(1+div*n, min(numX-1, div*(n+1)), arr,
+                iterationsLinearSolverJacobi(1+div*n, min(numX-1, 1+div*(n+1)), arr,
                                             prevArr, tmp, a, denom, scale, dims);
+                latch.count_down();
             });
         }
 
-        pool.wait();
+        latch.wait();
         
         std::swap(tmp, arr);
         updateBoundary(arr, scale);

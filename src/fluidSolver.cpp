@@ -1,5 +1,6 @@
 #include <fluidSolver.h>
 #include <iostream>
+#include <boost/asio.hpp>
 using namespace std;
 
 fluid::FluidSolver::FluidSolver(int width, int height, int dx, float viscosity):
@@ -211,16 +212,16 @@ inline size_t fluid::FluidSolver::getCoord(size_t x, size_t y) {
 
 void fluid::FluidSolver::addAllForce(size_t x_begin, size_t x_end, float dt) {
     for (size_t i = x_begin; i < x_end; i++) {
-        for (size_t j = 0; j < numY; j++) {
-            addForce(i, j, dt);
+        for (size_t j = 0; j < this->numY; j++) {
+            this->addForce(i, j, dt);
         }
     }
 }
 
 void fluid::FluidSolver::addForce(size_t x, size_t y, float dt) {
-    size_t ind = getCoord(x, y);
-    for (size_t d = 0; d < DIM; d++) {
-        prevVelocity[ind][d] += dt*externalForce[ind][d];
+    size_t ind = this->getCoord(x, y);
+    for (size_t d = 0; d < this->DIM; d++) {
+        this->prevVelocity[ind][d] += dt*this->externalForce[ind][d];
     }
 }
 
